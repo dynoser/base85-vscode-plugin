@@ -1,0 +1,123 @@
+{
+  "name": "base85",
+  "displayName": "base85",
+  "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting",
+  "version": "1.0.1",
+  "publisher": "dynoser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dynoser/base85-vscode-plugin"
+  },
+  "engines": {
+    "vscode": "^1.65.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Other"
+  ],
+  "icon": "images/icon.png",
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:base85",
+    "onLanguage:php",
+    "onWebviewPanel:base85"
+  ],
+  "main": "./out/extension.js",
+  "browser": "./out/web/extension.js",
+  "web": "out/web/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "base85",
+        "extensions": [
+          ".b85"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "base85",
+        "scopeName": "source.base85",
+        "path": "./syntaxes/base85.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "base85.encode",
+        "title": "Encode to base85"
+      },
+      {
+        "command": "base85.decode",
+        "title": "Decode from base85"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "base85.encode",
+          "when": "editorTextFocus && editorHasSelection && base85.canEncode"
+        },
+        {
+          "command": "base85.decode",
+          "when": "editorTextFocus && editorHasSelection && base85.canDecode"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "base85",
+      "properties": {
+        "base85.encodeMode": {
+          "type": "string",
+          "default": "vwx (ascii85 + vwx)",
+          "enum": [
+            "ascii85 (classic)",
+            "vwx (ascii85 + vwx)",
+            "vc85 (ascii85 + vwx + vc85)"
+          ],
+          "description": "What charset will be used for encoding?"
+        },
+        "base85.addPrefixes": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "base85 encoder will add `<~` prefix and `~>` suffix to encoded data"
+        },
+        "base85.splitWidth": {
+          "type": "number",
+          "default": 75,
+          "markdownDescription": "base85 encoder will split result by this string-wide (0 = do not split)"
+        },
+        "base85.menuEncoder": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Add item '`Encode to base85`' to the selection menu"
+        },
+        "base85.menuDecoder": {
+          "type": "string",
+          "default": "by Context",
+          "enum": [
+            "Always",
+            "by Context",
+            "on <~...~>",
+            "Diabled"
+          ],
+          "markdownDescription": "Add item '`Decode from base85`' to the selection menu"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/node": "^14.18.63",
+    "@types/vscode": "^1.65.0",
+    "@types/webpack-env": "^1.16.0",
+    "source-map-loader": "^4.0.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.3.3",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1"
+  }
+}

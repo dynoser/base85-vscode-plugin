@@ -1,0 +1,45 @@
+{
+  "scopeName": "source.base85",
+  "patterns": [
+    {
+      "include": "#multiline_vc85_rule"
+    }
+  ],
+  "repository": {
+    "multiline_vc85_rule": {
+      "patterns": [
+        {
+          "name": "string.quoted.multi.base85",
+          "begin": "<~",
+          "end": "~>",
+          "patterns": [
+            {
+              "name": "meta.object-literal.key",
+              "match": "[\\s!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ]+"
+            },
+            {
+              "name": "invalid.character.base85",
+              "match": "[^\\s!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ]"
+            }
+          ]
+        },        
+
+        {
+          "name": "string.quoted.multi.base85",
+          "begin": ":<$",
+          "end": "^\\s*>\\s*$",
+          "patterns": [
+            {
+              "name": "meta.object-literal.key",
+              "match": "[\\s!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ]+"
+            },
+            {
+              "name": "invalid.character.base85",
+              "match": "[^\\s!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ]"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
