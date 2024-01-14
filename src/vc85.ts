@@ -35,7 +35,8 @@ export default class vc85 {
      *  0 - get actual value from vc85.defaultEncodeMode
      *  1 - classic ascii85 compatible characters table
      *  2 - vwx (default) - ascii85 with replaces: "=>v '=>w \=>x
-     *  3 - vc85 - ascii85 with replaces all spec.chars to visually distinct characters
+     *  3 - vc85 - ascii85 with replaces all spec.chars to visually distinct characters (utf-8)
+     *  4 - vc85 - same as 3, but the result will be encoded in windows-cp1251
      * @param encodeMode Mode 1, default = 2, 3
      */
     public static init(encodeMode: number = 0): void {
@@ -63,14 +64,19 @@ export default class vc85 {
         // replacement table: first char = from, second char = to.
         const repArr: string[] = ['!Я', '#Ж', '$Д', '%П', '&Ц', '(Щ', ')щ', '*ж', '+ф', ',ц', '-Э', '.я',
             '/ю', ':д', ';Б', '<Г', '=э', '>ъ', '?Ъ', '@Ф', 'IИ', 'OЮ', '[Ш', ']ш', '^л', '`й', 'lЛ'];
-        repArr.forEach(repCh => {
+        // add windows-cp1251 char table
+        const cp1251 = [223,198,196,207,214,217,249,230,244,246,221,255,254,228,193,195,253,250,218,212,200,222,216,248,235,233,203];
+
+        repArr.forEach((repCh, n) => {
             const cn: number = repCh.charCodeAt(0);
             const ca: number = repCh.charCodeAt(repCh.length - 1);
+            const cp = cp1251[n];
             const i: number = cn - 33;
             if (encodeMode > 2) {
-                vc85.vc85enc[i] = repCh.substring(1);
+                vc85.vc85enc[i] = (encodeMode === 4) ? String.fromCharCode(cp) : repCh.substring(1);
             }
             vc85.vc85dec[ca] = i;
+            vc85.vc85dec[cp] = i;
             if (ca > 1088) {    //d1 xx
                 vc85.vc85dec[ca - 960] = i;
             } else if (ca > 1024) { //d0 xx
