@@ -34,6 +34,10 @@ class menuContext {
         menuContext.docIsB85 = langID === '.b85';
         let canDecode = menuContext.docIsB85;
         let canEncode = true;
+        let selExactly85 = false;
+        let selMaybeHex = false;
+        let selExactlyHex = false;
+        let selMaybeB64 = false;
         // try to detect integrateg-base85 by ~-prefix
         const sel_text = document.getText(selection);
         if (sel_text) {
@@ -56,39 +60,69 @@ class menuContext {
                 strlen--;
             }
             if (strlen > 1) {
-                if (menuContext.menuDecoderEnabled === 'by Context' || menuContext.menuDecoderEnabled === "on <~...~>") {
-                    let firstCh = sel_text.charAt(i);
-                    // Is the selected text enclosed in quotation?
-                    const inQuotas = (lastCh === firstCh) && ('`\'"'.indexOf(firstCh) >= 0);
-                    if (inQuotas) {
-                        i++;
-                        firstCh = sel_text.charAt(i);
-                        lastCh = sel_text.charAt(i + strlen - 1);
-                        strlen--;
+                let firstCh = sel_text.charAt(i);
+                // Is the selected text enclosed in quotation?
+                // const inQuotas: string = ((lastCh === firstCh) && ('`\'"'.indexOf(firstCh) >= 0)) ? lastCh : '';
+                // if (inQuotas) {
+                //     i++;
+                //     firstCh = sel_text.charAt(i);
+                //     strlen -= 2;
+                //     lastCh = sel_text.charAt(i + strlen - 1);
+                // }
+                // HEX check
+                if (strlen > 7) {
+                    selMaybeHex = /^[0-9a-fA-F\s]*$/.test(sel_text.substring(i, i + strlen));
+                    if (selMaybeHex && strlen > 15) {
+                        selExactlyHex = true;
+                        if (strlen < 32) {
+                            selMaybeB64 = true;
+                        }
                     }
+                    else {
+                        selMaybeB64 = /^[A-Za-z0-9+\-_/=\s]*$/.test(sel_text.substring(i, i + strlen));
+                    }
+                }
+                if (menuContext.menuDecoderEnabled === 'by Context' || menuContext.menuDecoderEnabled === "on <~...~>") {
                     const firstTilda = sel_text.indexOf('~', i);
                     if (firstTilda === i + 1 && firstCh === '<') {
                         canDecode = true;
                         canEncode = false;
+                        selExactly85 = true;
                     }
                     else {
                         if (menuContext.menuDecoderEnabled === "on <~...~>") {
                             canDecode = false;
                         }
+                        else if ((selExactlyHex && strlen > 32) || (selMaybeB64 && strlen > 64)) {
+                            canDecode = false;
+                            canEncode = false;
+                        }
                         else {
                             // by Context:
+                            let spacesInLines = false;
                             let eol = sel_text.indexOf("\n", i);
                             if (eol > i && eol < i + strlen) {
+                                let lines = sel_text.substring(i, i + strlen).split("\n");
+                                for (let line of lines) {
+                                    if (/\s/.test(line.trim())) {
+                                        canDecode = false;
+                                        spacesInLines = true;
+                                        selMaybeB64 = false;
+                                        break;
+                                    }
+                                }
                                 strlen = (eol - i);
                             }
-                            while (strlen) {
-                                lastCh = sel_text[i + strlen - 1];
-                                if (spcs.indexOf(lastCh) < 0)
-                                    break;
-                                strlen--;
-                            }
-                            if (strlen > 1) {
-                                canDecode = /^[!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ\\s\\r\\n]*$/u.test(sel_text.substring(i, i + strlen));
+                            if (!spacesInLines) {
+                                while (strlen) {
+                                    lastCh = sel_text[i + strlen - 1];
+                                    if (spcs.indexOf(lastCh) < 0)
+                                        break;
+                                    strlen--;
+                                }
+                                if (strlen > 1) {
+                                    canDecode = /^[!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ\s]*$/u.test(sel_text.substring(i, i + strlen));
+                                }
                             }
                         }
                     }
@@ -107,7 +141,7 @@ class menuContext {
                 return menuContext.menuCanDecode;
             });
         }
-        if (!menuContext.menuEncoderEnabled) {
+        if (!menuContext.menuEncodeEnabled) {
             canEncode = false;
         }
         if (canEncode !== menuContext.menuCanEncode) {
@@ -116,12 +150,41 @@ class menuContext {
                 return menuContext.menuCanEncode;
             });
         }
+        if (selExactly85 !== menuContext.menuSelExactly85) {
+            menuContext.menuSelExactly85 = selExactly85;
+            vscode.commands.executeCommand("setContext", "base85.selExactly85", menuContext.menuSelExactly85).then(() => {
+                return menuContext.menuSelExactly85;
+            });
+        }
+        if (selMaybeHex !== menuContext.menuSelMaybeHex) {
+            menuContext.menuSelMaybeHex = selMaybeHex;
+            vscode.commands.executeCommand("setContext", "base85.selMaybeHex", menuContext.menuSelMaybeHex).then(() => {
+                return menuContext.menuSelMaybeHex;
+            });
+        }
+        if (selExactlyHex !== menuContext.menuSelExactlyHex) {
+            menuContext.menuSelExactlyHex = selExactlyHex;
+            vscode.commands.executeCommand("setContext", "base85.selExactlyHex", menuContext.menuSelExactlyHex).then(() => {
+                return menuContext.menuSelExactlyHex;
+            });
+        }
+        if (selMaybeB64 !== menuContext.menuSelMaybeB64) {
+            menuContext.menuSelMaybeB64 = selMaybeB64;
+            vscode.commands.executeCommand("setContext", "base85.selMaybeB64", menuContext.menuSelMaybeB64).then(() => {
+                return menuContext.menuSelMaybeB64;
+            });
+        }
     }
 }
-menuContext.menuEncoderEnabled = true;
+menuContext.menuEncodeEnabled = true;
 menuContext.menuDecoderEnabled = 'by Context';
 menuContext.docIsB85 = false;
+menuContext.menuSelMaybeHex = false;
+menuContext.menuSelExactlyHex = false;
+menuContext.menuSelMaybeB64 = false;
 menuContext.menuCanDecode = false;
 menuContext.menuCanEncode = false;
+menuContext.menuSelExactly85 = false;
+menuContext.menuBase64UrlMode = false;
 exports.default = menuContext;
 //# sourceMappingURL=menucontext.js.map

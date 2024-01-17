@@ -36,8 +36,9 @@ function reloadConfig(event = null) {
     const splitWidth = config.get('splitWidth');
     const addPf = config.get('addPrefixes');
     const encodeModeStr = config.get('encodeMode');
-    const menuEncoder = config.get('menuEncoder');
+    const menuEncodeEnable = config.get('menuEncodeEnable');
     const menuDecoder = config.get('menuDecoder');
+    const urlModeBase64 = config.get('urlModeBase64');
     if (splitWidth !== undefined && splitWidth !== vc85_1.default.splitWidth) {
         vc85_1.default.splitWidth = splitWidth;
     }
@@ -45,23 +46,31 @@ function reloadConfig(event = null) {
         vc85_1.default.addPf = addPf;
     }
     if (encodeModeStr !== undefined) {
-        let encodeModeNum = 3;
+        let encodeModeNum = 0;
         if (encodeModeStr === "ascii85 (classic)") {
             encodeModeNum = 1;
         }
         else if (encodeModeStr === "vwx (ascii85 + vwx)") {
             encodeModeNum = 2;
         }
-        if (encodeModeNum !== vc85_1.default.defaultEncodeMode) {
-            vc85_1.default.defaultEncodeMode = encodeModeNum;
+        else if (encodeModeStr === "vc85 (ascii85 + vwx + vc85)") {
+            encodeModeNum = 3;
+        }
+        else {
+            vscode.window.showErrorMessage('Unknown encodeMode option value');
+        }
+        if (encodeModeNum !== vc85_1.default.currentEncodeMode) {
             vc85_1.default.init(encodeModeNum);
         }
     }
-    if (menuEncoder !== undefined && menuEncoder !== menucontext_1.default.menuEncoderEnabled) {
-        menucontext_1.default.menuEncoderEnabled = menuEncoder;
+    if (menuEncodeEnable !== undefined && menuEncodeEnable !== menucontext_1.default.menuEncodeEnabled) {
+        menucontext_1.default.menuEncodeEnabled = menuEncodeEnable;
     }
     if (menuDecoder !== undefined && menuDecoder !== menucontext_1.default.menuDecoderEnabled) {
         menucontext_1.default.menuDecoderEnabled = menuDecoder;
+    }
+    if (urlModeBase64 !== undefined && urlModeBase64 !== menucontext_1.default.menuBase64UrlMode) {
+        menucontext_1.default.menuBase64UrlMode = urlModeBase64;
     }
 }
 exports.reloadConfig = reloadConfig;
