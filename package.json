@@ -1,8 +1,8 @@
 {
   "name": "base85",
   "displayName": "base85",
-  "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting",
-  "version": "1.0.1",
+  "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting, base64 and hex convert",
+  "version": "1.0.6",
   "publisher": "dynoser",
   "license": "MIT",
   "repository": {
@@ -51,6 +51,54 @@
       {
         "command": "base85.decode",
         "title": "Decode from base85"
+      },
+
+      {
+        "command": "base85.textToBase64",
+        "title": "Convert text to Base64"
+      },
+      {
+        "command": "base85.textToBase64url",
+        "title": "Convert text to Base64url"
+      },
+      {
+        "command": "base85.base64ToText",
+        "title": "Convert Base64 to text"
+      },
+
+      {
+        "command": "base85.textToHex",
+        "title": "Convert text (utf-8) to HEX"
+      },
+      {
+        "command": "base85.hexToText",
+        "title": "Convert HEX to text (utf-8)"
+      },
+
+      {
+        "command": "base85.hexToBase64",
+        "title": "Convert HEX to Base64"
+      },
+      {
+        "command": "base85.base64ToHex",
+        "title": "Convert Base64 to HEX"
+      },
+      {
+        "command": "base85.base64ToBase85",
+        "title": "Convert Base64 to base85"
+      },
+
+      {
+        "command": "base85.hexToBase85",
+        "title": "Convert HEX to base85"
+      },
+      {
+        "command": "base85.base85ToHex",
+        "title": "Convert base85 to HEX"
+      },
+      {
+        "command": "base85.base85ToBase64",
+        "title": "Convert base85 to Base64"
       }
     ],
     "menus": {
@@ -62,7 +110,36 @@
         {
           "command": "base85.decode",
           "when": "editorTextFocus && editorHasSelection && base85.canDecode"
+        },
+        {
+          "command": "base85.base85ToHex",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
+        },
+        {
+          "command": "base85.base85ToBase64",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
+        },
+        {
+          "command": "base85.hexToText",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactlyHex"
+        },
+        {
+          "command": "base85.hexToBase64",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactlyHex"
+        },
+        {
+          "command": "base85.hexToBase85",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactlyHex"
+        },
+        {
+          "command": "base85.base64ToHex",
+          "when": "editorTextFocus && editorHasSelection && base85.selMaybeB64"
+        },
+        {
+          "command": "base85.base64ToText",
+          "when": "editorTextFocus && editorHasSelection && base85.selMaybeB64"
         }
+
       ]
     },
     "configuration": {
@@ -88,14 +165,14 @@
           "default": 75,
           "markdownDescription": "base85 encoder will split result by this string-wide (0 = do not split)"
         },
-        "base85.menuEncoder": {
+        "base85.menuEncodeEnable": {
           "type": "boolean",
           "default": true,
           "markdownDescription": "Add item '`Encode to base85`' to the selection menu"
         },
         "base85.menuDecoder": {
           "type": "string",
-          "default": "by Context",
+          "default": "on <~...~>",
           "enum": [
             "Always",
             "by Context",
@@ -103,6 +180,11 @@
             "Diabled"
           ],
           "markdownDescription": "Add item '`Decode from base85`' to the selection menu"
+        },
+        "base85.urlModeBase64": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Base64 encoder will use URL mode (replace `+` to `-`, replace `/` to `_`)"
         }
       }
     }
