@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import vc85 from './vc85';
 import menuContext from './menucontext';
-import base1664 from './base1664';
 
 export function reloadConfig(event: vscode.ConfigurationChangeEvent | null = null) {
     const extname = 'base85';
