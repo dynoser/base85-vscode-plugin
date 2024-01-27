@@ -211,4 +211,34 @@ export default class vc85 {
         const textDecoder = new TextDecoder('utf-8');
         return textDecoder.decode(Uint8Arr);
     }
+
+    public static convert(data: string, toMode: number = 0): string {
+        if (!toMode) {
+            toMode = vc85.currentEncodeMode;
+        }
+        vc85.init(toMode);
+
+        // need data between <~ ... ~>
+        let fromPos: number = data.indexOf('<~');
+        fromPos = (fromPos < 0) ? 0 : fromPos + 2;
+        
+        let toPos: number = data.length;
+        const j: number = data.indexOf('~>', fromPos);
+        if (j) {
+            toPos = j;
+        }
+
+        for(let p=fromPos; p < toPos; p++) {
+            const chcode = data.charCodeAt(p);
+            if (vc85.vc85dec[chcode] !== undefined) {
+                const num85 = vc85.vc85dec[chcode];
+                const chnew = vc85.vc85enc[num85];
+                if (data[p] !== chnew) {
+                    data = data.substring(0, p) + chnew + data.substring(p + 1);
+                }
+            }
+        };
+
+        return data;
+    }
 }
