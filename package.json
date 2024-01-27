@@ -1,8 +1,8 @@
 {
   "name": "base85",
   "displayName": "base85",
-  "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting, base64 and hex convert",
-  "version": "1.0.6",
+  "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting, base64, base128 and hex convert",
+  "version": "1.0.7",
   "publisher": "dynoser",
   "license": "MIT",
   "repository": {
@@ -52,6 +52,18 @@
         "command": "base85.decode",
         "title": "Decode from base85"
       },
+      {
+        "command": "base85.toASCII85",
+        "title": "Charset to ASCII85"
+      },
+      {
+        "command": "base85.toVWX85",
+        "title": "Charset to vwx85"
+      },
+      {
+        "command": "base85.toVC85",
+        "title": "Charset to vc85"
+      },
 
       {
         "command": "base85.textToBase64",
@@ -84,7 +96,7 @@
         "title": "Convert Base64 to HEX"
       },
       {
-        "command": "base85.base64ToBase85",
+        "command": "base85.base64To85",
         "title": "Convert Base64 to base85"
       },
 
@@ -97,8 +109,24 @@
         "title": "Convert base85 to HEX"
       },
       {
-        "command": "base85.base85ToBase64",
+        "command": "base85.base85To64",
         "title": "Convert base85 to Base64"
+      },
+      {
+        "command": "base85.base64To128",
+        "title": "Convert Base64 to Base128"
+      },
+      {
+        "command": "base85.base128To64",
+        "title": "Convert Base128 to Base64"
+      },
+      {
+        "command": "base85.base128To85",
+        "title": "Convert Base128 to base85"
+      },
+      {
+        "command": "base85.base85To128",
+        "title": "Convert base85 to Base128"
       }
     ],
     "menus": {
@@ -112,11 +140,31 @@
           "when": "editorTextFocus && editorHasSelection && base85.canDecode"
         },
         {
+          "command": "base85.toVC85",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
+        },
+        {
+          "command": "base85.toVWX85",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
+        },
+        {
+          "command": "base85.toASCII85",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
+        },
+        {
+          "command": "base85.base128To64",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly128"
+        },
+        {
+          "command": "base85.base128To85",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly128"
+        },
+        {
           "command": "base85.base85ToHex",
           "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
         },
         {
-          "command": "base85.base85ToBase64",
+          "command": "base85.base85To64",
           "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
         },
         {
@@ -138,8 +186,19 @@
         {
           "command": "base85.base64ToText",
           "when": "editorTextFocus && editorHasSelection && base85.selMaybeB64"
+        },
+        {
+          "command": "base85.base64To85",
+          "when": "editorTextFocus && editorHasSelection && base85.selMaybeB64"
+        },
+        {
+          "command": "base85.base64To128",
+          "when": "editorTextFocus && editorHasSelection && base85.selMaybeB64"
+        },
+        {
+          "command": "base85.base85To128",
+          "when": "editorTextFocus && editorHasSelection && base85.selExactly85"
         }
-
       ]
     },
     "configuration": {
