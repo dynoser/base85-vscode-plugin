@@ -3,6 +3,9 @@
   "patterns": [
     {
       "include": "#multiline_vc85_rule"
+    },
+    {
+      "include": "#multiline_vc128_rule"
     }
   ],
   "repository": {
@@ -36,6 +39,25 @@
             {
               "name": "invalid.character.base85",
               "match": "[^\\s!-zЯЖДПЦЩщжфцЭяюдБГэъЪФИЮШшлйЛ]"
+            }
+          ]
+        }
+      ]
+    },
+    "multiline_vc128_rule": {
+      "patterns": [
+        {
+          "name": "string.quoted.multi.base85",
+          "begin": "`{",
+          "end": "}",
+          "patterns": [
+            {
+              "name": "meta.object-literal.key",
+              "match": "[\\s!-zБвГгДдЖжзИиЙйкЛлмнПтУФфЦцЧчШшЩщЪъЫыьЭэЮюЯя\\|]+"
+            },
+            {
+              "name": "invalid.character.base85",
+              "match": "[^\\s!-zБвГгДдЖжзИиЙйкЛлмнПтУФфЦцЧчШшЩщЪъЫыьЭэЮюЯя\\|]"
             }
           ]
         }
