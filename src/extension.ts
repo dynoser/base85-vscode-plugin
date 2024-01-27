@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import vc85 from './vc85';
+import vc128 from './vc128';
 import base1664 from './base1664';
 import * as extconfig from './extconfig';
 import menucontext from './menucontext';
@@ -86,17 +87,26 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('base85.hexToBase64', cre_sel_conv_fn(SELECTIONhexToBase64))
     );
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand('base85.hexToBase64std', cre_sel_conv_fn(SELECTIONhexToBase64std))
-    // );
-    // context.subscriptions.push(
-    //     vscode.commands.registerCommand('base85.hexToBase64url', cre_sel_conv_fn(SELECTIONhexToBase64url))
-    // );
+
+    // convert from base85-any-mode to base85-specified-mode
+    context.subscriptions.push(
+         vscode.commands.registerCommand('base85.toASCII85', cre_sel_conv_fn(SELECTIONbase85toASCII85))
+    );
+    context.subscriptions.push(
+         vscode.commands.registerCommand('base85.toVWX85', cre_sel_conv_fn(SELECTIONbase85toVWX))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.toVC85', cre_sel_conv_fn(SELECTIONbase85toVC85))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.toDefault', cre_sel_conv_fn(SELECTIONbase85toDefault))
+    );
+
     context.subscriptions.push(
         vscode.commands.registerCommand('base85.base64ToHex', cre_sel_conv_fn(SELECTIONBase64toHex))
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('base85.base64ToBase85', cre_sel_conv_fn(SELECTIONBase64toBase85))
+        vscode.commands.registerCommand('base85.base64To85', cre_sel_conv_fn(SELECTIONBase64toBase85))
     );
     
     context.subscriptions.push(
@@ -107,7 +117,21 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('base85.base85ToBase64', cre_sel_conv_fn(SELECTIONBase85toBase64))
+        vscode.commands.registerCommand('base85.base85To64', cre_sel_conv_fn(SELECTIONBase85toBase64))
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.base64To128', cre_sel_conv_fn(SELECTIONBase64toBase128))
+    );
+    
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.base128To64', cre_sel_conv_fn(SELECTIONBase128toBase64))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.base128To85', cre_sel_conv_fn(SELECTIONBase128toBase85))
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.base85To128', cre_sel_conv_fn(SELECTIONBase85toBase128))
     );
 
     vscode.window.onDidChangeTextEditorSelection(menucontext.onSelectionChange);
@@ -117,6 +141,22 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() { }
 
+export function SELECTIONbase85toVC85(sel_text: string): string | null {
+    return base85Convert(sel_text, 3);
+}
+export function SELECTIONbase85toVWX(sel_text: string): string | null {
+    return base85Convert(sel_text, 2);
+}
+export function SELECTIONbase85toASCII85(sel_text: string): string | null {
+    return base85Convert(sel_text, 1);
+}
+export function SELECTIONbase85toDefault(sel_text: string): string | null {
+    return base85Convert(sel_text, 0);
+}
+
+export function base85Convert(sel_text: string, toMode: number = 0) {
+    return vc85.convert(sel_text, toMode);
+}
 
 export function SELECTIONtoVC85(sel_text: string): string | null {
     return textToBase85(sel_text);
@@ -297,6 +337,67 @@ export function base85ToBase64(sel_text: string): string | null {
         return b64;
     } catch(e: any) {
         vscode.window.showErrorMessage(`Failed convert base85 to base64: ${e.message}`);
+    }
+    return null;
+}
+
+export function SELECTIONBase128toBase64(sel_text: string): string | null {
+    return base128ToBase64(sel_text);
+}
+
+export function base128ToBase64(sel_text: string): string | null {
+    try {
+        const Uint8Arr = vc128.decodeToUint8Arr(sel_text);        
+        const b64 = base1664.Uint8ArrToBase64(Uint8Arr);
+        return b64;
+    } catch(e: any) {
+        vscode.window.showErrorMessage(`Failed convert base128 to base64: ${e.message}`);
+    }
+    return null;
+}
+
+
+export function SELECTIONBase64toBase128(sel_text: string): string | null {
+    return base64ToBase128(sel_text);
+}
+
+export function base64ToBase128(sel_text: string): string | null {
+    try {
+        const hexStr = base1664.base64ToHex(sel_text);
+        if (typeof hexStr === 'string') {
+            const Uint8Arr = base1664.hexToUint8Arr(hexStr);
+            return vc128.encodeUint8Arr(new Uint8Array(Uint8Arr));
+        }
+    } catch(e: any) {
+        vscode.window.showErrorMessage(`Failed convert base64 to hex: ${e.message}`);
+    }
+    return null;
+}
+
+export function SELECTIONBase128toBase85(sel_text: string): string | null {
+    return base128ToBase85(sel_text);
+}
+
+export function base128ToBase85(sel_text: string): string | null {
+    try {
+        const Uint8Arr = vc128.decodeToUint8Arr(sel_text);
+        return vc85.encodeUint8Arr(new Uint8Array(Uint8Arr));
+    } catch(e: any) {
+        vscode.window.showErrorMessage(`Failed convert base128 to base64: ${e.message}`);
+    }
+    return null;
+}
+
+export function SELECTIONBase85toBase128(sel_text: string): string | null {
+    return base85ToBase128(sel_text);
+}
+
+export function base85ToBase128(sel_text: string): string | null {
+    try {
+        const Uint8Arr = vc85.decodeToUint8Arr(sel_text);
+        return vc128.encodeUint8Arr(new Uint8Array(Uint8Arr));
+    } catch(e: any) {
+        vscode.window.showErrorMessage(`Failed convert base128 to base64: ${e.message}`);
     }
     return null;
 }
