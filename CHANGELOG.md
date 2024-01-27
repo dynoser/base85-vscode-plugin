@@ -4,6 +4,18 @@ All notable changes to the "base85" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.7]
+
+### Added
+ - charset converting for base85
+ - Commands: toASCII85, toVWX85, toVC85
+ - base128 support
+ - Commands: base64To128, base128To64, base128To85, base85to128
+
+### Changed
+ - base64To85 (old version: base64ToBase85)
+ - base85To64 (old vession: base85ToBase64)
+
 ## [1.0.6]
 
 ### Fixed
