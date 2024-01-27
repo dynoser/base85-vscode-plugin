@@ -15,6 +15,7 @@ export default class menuContext {
     public static menuCanEncode: boolean = false;
 
     public static menuSelExactly85: boolean = false;
+    public static menuSelExactly128: boolean = false;
 
     public static menuBase64UrlMode: boolean = false;
 
@@ -35,6 +36,7 @@ export default class menuContext {
         let selMaybeHex = false;
         let selExactlyHex = false;
         let selMaybeB64 = false;
+        let selExactly128 = false;
 
         // try to detect integrateg-base85 by ~-prefix
         const sel_text = document.getText(selection);
@@ -60,6 +62,9 @@ export default class menuContext {
 
             if (strlen > 1) {
                 let firstCh = sel_text.charAt(i);
+                if (firstCh === '`' && strlen>2 && lastCh === '}' && sel_text.charAt(i+1) === '{') {
+                    selExactly128 = true;
+                }
                 // Is the selected text enclosed in quotation?
                 // const inQuotas: string = ((lastCh === firstCh) && ('`\'"'.indexOf(firstCh) >= 0)) ? lastCh : '';
 
@@ -71,7 +76,7 @@ export default class menuContext {
                 // }
 
                 // HEX check
-                if (strlen > 7) {
+                if (strlen > 7 && !selExactly128) {
                     selMaybeHex = /^[0-9a-fA-F\s]*$/.test(sel_text.substring(i, i+strlen));
 
                     if (selMaybeHex && strlen > 15) {
@@ -84,7 +89,7 @@ export default class menuContext {
                     }
                 }
 
-                if (menuContext.menuDecoderEnabled === 'by Context' || menuContext.menuDecoderEnabled === "on <~...~>") {
+                if (!selExactly128 && (menuContext.menuDecoderEnabled === 'by Context' || menuContext.menuDecoderEnabled === "on <~...~>")) {
 
                     const firstTilda = sel_text.indexOf('~', i);
                     if (firstTilda === i+1 && firstCh === '<') {
@@ -156,6 +161,13 @@ export default class menuContext {
             menuContext.menuSelExactly85 = selExactly85;
             vscode.commands.executeCommand("setContext", "base85.selExactly85", menuContext.menuSelExactly85).then(() => {
                 return menuContext.menuSelExactly85;
+            });
+        }
+
+        if (selExactly128 !== menuContext.menuSelExactly128) {
+            menuContext.menuSelExactly128 = selExactly128;
+            vscode.commands.executeCommand("setContext", "base85.selExactly128", menuContext.menuSelExactly128).then(() => {
+                return menuContext.menuSelExactly128;
             });
         }
 
