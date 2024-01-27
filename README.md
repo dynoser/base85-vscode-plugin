@@ -1,6 +1,6 @@
-# Encode/decode base85, Base64, HEX
+# Encode/decode base85, Base64, Base128, HEX
 
-## Convert data between base85, base64 and hex formats.
+## Convert data between base85, base64, base128 and hex formats.
 
  - [base85 (ASCII85) wiki specification](https://en.wikipedia.org/wiki/Ascii85)
  - [Base64 wiki specification](https://en.wikipedia.org/wiki/Base64)
@@ -13,8 +13,8 @@
    - `base85.decode` (menu item "Decode from base85", convert selection from base85)
  - Commands for current selection converts:
    - `base85.base85ToHex`  -- from base85 to HEX
-   - `base85.base85ToBase64` -- from base85 to Base64
-   - `base85.base64ToBase85` -- from Base64 to base85
+   - `base85.base85To64` -- from base85 to Base64
+   - `base85.base64To85` -- from Base64 to base85
    - `base85.base64ToHex`  -- from Base64 to HEX
    - `base85.base64ToText` -- from Base64 to text
    - `base85.hexToBase85`  -- from HEX to base85
@@ -22,9 +22,16 @@
    - `base85.hexToText`    -- HEX to text
    - `base85.textToBase64` -- from text to Base64
    - `base85.textToHex`    -- text to HEX
+   - `base85.base85To128`  -- from base85 to Base128
+   - `base85.base128To85`  -- from Base128 to base85
+
  - Base85 data-blocks highlighting by <~ ... ~> (when selected "base85" language)
 
 
 You can find these menu items by right-clicking on the selection:
 
 ![Menu Encode85 / Decode85](https://raw.githubusercontent.com/dynoser/base85-vscode-plugin/main/images/base85menuse.gif)
+
+
+## Charset
+![base85 / vc85 charset table](https://raw.githubusercontent.com/dynoser/base85-vscode-plugin/main/images/vc85.png)
