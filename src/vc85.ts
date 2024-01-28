@@ -224,7 +224,7 @@ export default class vc85 {
         
         let toPos: number = data.length;
         const j: number = data.indexOf('~>', fromPos);
-        if (j) {
+        if (j >= 0) {
             toPos = j;
         }
 
