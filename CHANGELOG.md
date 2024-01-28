@@ -4,6 +4,12 @@ All notable changes to the "base85" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.8]
+
+### Added
+ - New command: align85 
+ - file extension recognition:: .a85, .b85, .ascii85, .base85
+
 ## [1.0.7]
 
 ### Added
