@@ -2,7 +2,7 @@
   "name": "base85",
   "displayName": "base85",
   "description": "Plugin to encode/decode base85 (ascii85, vwx85, vc85) data and highlighting, base64, base128 and hex convert",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "publisher": "dynoser",
   "license": "MIT",
   "repository": {
@@ -32,7 +32,10 @@
       {
         "id": "base85",
         "extensions": [
-          ".b85"
+          ".a85",
+          ".ascii85",
+          ".b85",
+          ".base85"
         ]
       }
     ],
@@ -127,6 +130,10 @@
       {
         "command": "base85.base85To128",
         "title": "Convert base85 to Base128"
+      },
+      {
+        "command": "base85.align85",
+        "title": "Align to vc85 charset"
       }
     ],
     "menus": {
