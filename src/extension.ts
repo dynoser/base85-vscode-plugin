@@ -4,6 +4,7 @@ import vc128 from './vc128';
 import base1664 from './base1664';
 import * as extconfig from './extconfig';
 import menucontext from './menucontext';
+import vc85align from './vc85align';
 
 // Create selection-converter function envelope for specified converter_fn
 function cre_sel_conv_fn(converter_fn: (text: string) => string | null, targetLang: string = '') {
@@ -133,7 +134,9 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('base85.base85To128', cre_sel_conv_fn(SELECTIONBase85toBase128))
     );
-
+    context.subscriptions.push(
+        vscode.commands.registerCommand('base85.align85', cre_sel_conv_fn(SELECTIONalign85))
+    );
     vscode.window.onDidChangeTextEditorSelection(menucontext.onSelectionChange);
 
 //    vscode.languages.registerHoverProvider('base85', hoverlook.hoverProvider);
@@ -398,6 +401,15 @@ export function base85ToBase128(sel_text: string): string | null {
         return vc128.encodeUint8Arr(new Uint8Array(Uint8Arr));
     } catch(e: any) {
         vscode.window.showErrorMessage(`Failed convert base128 to base64: ${e.message}`);
+    }
+    return null;
+}
+
+export function SELECTIONalign85(sel_text: string) : string | null {
+    try {
+        return vc85align.align(sel_text);
+    } catch(e: any) {
+        vscode.window.showErrorMessage(`Failed align text to vc85 charset: ${e.message}`);
     }
     return null;
 }
